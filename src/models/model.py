@@ -16,12 +16,11 @@ class Estimator:
         return time_list
 
     def train(self, t, u, y):
-        theta_plot = []
+        error, theta_plot = [], []
         P = 100000*np.identity(3)
         p = np.zeros(t.shape[0])
         theta = [0, 0, 0]
         time_list = self.create_timelist()
-        print(time_list)
         for i in range(t.shape[0]):
             theta_plot.append(theta)
             p[i] = np.linalg.norm(P, ord='fro')
@@ -31,6 +30,8 @@ class Estimator:
             if np.round(t[i],3) in time_list:
                 P = 100000*np.identity(3)
             theta = theta + K.dot(y[i] - np.transpose(fi).dot(theta))
+            error.append(abs(y[i] - theta[0]*u[0][i] + theta[1]*u[1][i] + theta[2]*u[2][i]))
+        self.error = error
         return theta_plot, p
            
 
