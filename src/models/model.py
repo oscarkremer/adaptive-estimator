@@ -20,7 +20,8 @@ class Estimator:
         error, theta_plot = [], []
         self.P = self.rastreabilty*np.identity(3)
         p = np.zeros(t.shape[0])
-        inv_norm = np.zeros(t.shape[0])
+        y_hat = np.zeros(t.shape[0])
+        norm = np.zeros(t.shape[0])
         mean = np.zeros(t.shape[0])
         theta = [0, 0, 0]
         time_list = self.create_timelist()
@@ -29,14 +30,15 @@ class Estimator:
                 self.P = self.rastreabilty*np.identity(3)
             error.append(abs(y[i] - theta[0]*u[0][i] - theta[1]*u[1][i] - theta[2]*u[2][i])/y[i])
             p[i] = np.linalg.norm(self.P, ord='fro')
-            inv_norm[i] = np.linalg.norm(self.rastreabilty*np.identity(3), ord='fro')/p[i]
-            mean[i] = 0.5*(p[i] + inv_norm[i])
+            norm[i] = p[i]/np.linalg.norm(self.rastreabilty*np.identity(3), ord='fro')
+            mean[i] = 1/(0.5*(norm[i] + (1/error[i])))
             theta_plot.append(theta)
             fi = np.array([[u[0][i]], [u[1][i]], [u[2][i]]])
             K = self.P.dot(fi)/(1 + (np.transpose(fi).dot(self.P)).dot(fi))
             self.P = (np.identity(3) - K.dot(np.transpose(fi))).dot(self.P)
             theta = theta + K.dot(y[i] - np.transpose(fi).dot(theta))
-            
+            y_hat[i] = theta_plot[i][0]*u[0][i] + theta_plot[i][1]*u[1][i] + theta_plot[i][2]*u[2][i]
+        self.y_hat = y_hat
         self.error = error
         self.theta_plot= theta_plot
         self.p = p
