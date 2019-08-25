@@ -1,0 +1,16 @@
+.cache
+*.egg
+*.egg-info/
+.pytest_cache
+*.db
+*.rdb
+env/
+__pycache__/
+.env
+.tox/
+*.swp
+*.pdf
+notebooks/.ipynb_checkpoints
+*.npy
+tox.ini
+/data/logs

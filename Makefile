@@ -17,13 +17,13 @@ PYTHON_INTERPRETER = python3
 
 
 model:
-	@echo "---> Test - Estimation"
+	@echo "---> Single Estimator Script"
 	@$(PYTHON_INTERPRETER) src/api/model_parameters.py
 
 
-evaluate:
-	@echo "---> Starting evaluation"
-	@$(PYTHON_INTERPRETER) src/api/evaluate.py
+multiple:
+	@echo "---> Inserting Recursive Least Mean Square with Multiple Estimators"
+	@$(PYTHON_INTERPRETER) src/api/multiple.py
 
 
 setup: check_environment
@@ -38,36 +38,13 @@ install:
 	@conda env update -f environment.yml
 
 
-imag_proc:
-	@echo "---> Image Segmentation"
-	@$(PYTHON_INTERPRETER) src/api/image_process.py
-
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
-train:
-	@echo "---> Load and prepare files, for training and testing"
-	@echo "---> This may take a few minutes, depending on the number of epochs"
-	@$(PYTHON_INTERPRETER) src/api/classifier_fit.py --epochs $(EPOCHS) --network-id $(NETWORK_ID)
-
-
-validate:
-	@echo "---> Start validation of convolutional networks"
-	@$(PYTHON_INTERPRETER) src/api/validate.py 
-
-
-download: dirs
-	aws s3 cp s3://thrive-cea/processed/sales.csv data/processed/ --quiet
-	aws s3 cp s3://thrive-cea/processed/stock.csv data/processed/ --quiet
-
 
 lint:
 	flake8 src
-
-
-predict:
-	@$(PYTHON_INTERPRETER) src/api/predict.py
 
 
 check_environment:
