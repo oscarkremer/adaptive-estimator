@@ -6,7 +6,15 @@ class Estimator:
     def __init__(self, delta_time, final_time):
         self.update_time = delta_time
         self.final_time = final_time
- 
+
+    def create_timelist(self):
+        time_list = []
+        append_time = self.update_time
+        while append_time < self.final_time:
+            time_list.append(np.round(append_time,2))
+            append_time+=self.update_time
+        return time_list
+
     def train(self, t, u, y):
         theta_plot = []
         P = 100000*np.identity(3)
@@ -25,11 +33,4 @@ class Estimator:
             theta = theta + K.dot(y[i] - np.transpose(fi).dot(theta))
         return theta_plot, p
            
-    def create_timelist(self):
-        time_list = []
-        append_time = self.update_time
-        while append_time < self.final_time:
-            time_list.append(np.round(append_time,2))
-            append_time+=self.update_time
-        return time_list
 
