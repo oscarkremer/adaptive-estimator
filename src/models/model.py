@@ -13,13 +13,14 @@ class Estimator:
         p = np.zeros(t.shape[0])
         theta = [0, 0, 0]
         time_list = self.create_timelist()
+        print(time_list)
         for i in range(t.shape[0]):
             theta_plot.append(theta)
             p[i] = np.linalg.norm(P, ord='fro')
             fi = np.array([[u[0][i]], [u[1][i]], [u[2][i]]])
             K = P.dot(fi)/(1 + (np.transpose(fi).dot(P)).dot(fi))
             P = (np.identity(3) - K.dot(np.transpose(fi))).dot(P)
-            if t[i] in time_list:
+            if np.round(t[i],3) in time_list:
                 P = 100000*np.identity(3)
             theta = theta + K.dot(y[i] - np.transpose(fi).dot(theta))
         return theta_plot, p
