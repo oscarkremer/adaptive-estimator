@@ -6,9 +6,9 @@ from src.models import Estimator
 if __name__=='__main__':
     y ,models, thetas, p = [], [], [], []
     t = np.arange(0, 0.5001, 0.001)
-    update_times = [0.03, 0.07, 0.09, 0.1]
+    update_times = [0.1, 0.5]
 
-    u = [np.sin(t), np.cos(t), 3*np.power(t, 3)]
+    u = [np.sin(t), np.cos(t), 3*np.power(t, 2)]
 
     for i in range(t.shape[0]):
         if np.round(t[i],3) < 0.3:
@@ -26,6 +26,7 @@ if __name__=='__main__':
         error_list = []
         for model in models:
             error_list.append(model.error[i])
+        print(error_list)
         index = np.argmin(np.array(error_list))
         
         thetas.append(models[index].theta_plot[i])
@@ -48,5 +49,6 @@ if __name__=='__main__':
     plt.plot(t, np.transpose(np.array(thetas))[1])
     plt.plot(t, np.transpose(np.array(thetas))[2])
     plt.show()
-    plt.plot(t, model.error)
+    for model in models:
+        plt.plot(t, model.error)
     plt.show()

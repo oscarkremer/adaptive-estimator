@@ -31,7 +31,7 @@ class Estimator:
             K = self.P.dot(fi)/(1 + (np.transpose(fi).dot(self.P)).dot(fi))
             self.P = (np.identity(3) - K.dot(np.transpose(fi))).dot(self.P)
             theta = theta + K.dot(y[i] - np.transpose(fi).dot(theta))
-            error.append(abs(y[i] - theta[0]*u[0][i] - theta[1]*u[1][i] - theta[2]*u[2][i]))
+            error.append(abs(y[i] - theta[0]*u[0][i] - theta[1]*u[1][i] - theta[2]*u[2][i])/y[i])
 
         self.error = error
         self.theta_plot= theta_plot
