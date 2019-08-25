@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 class Estimator:
-    def __init__(self, delta_time, final_time):
+    def __init__(self, delta_time, final_time, rastreabilty = 100000):
+        self.rastreabilty = rastreabilty
         self.update_time = delta_time
         self.final_time = final_time
 
@@ -17,21 +18,23 @@ class Estimator:
 
     def train(self, t, u, y):
         error, theta_plot = [], []
-        P = 100000*np.identity(3)
+        self.P = self.rastreabilty*np.identity(3)
         p = np.zeros(t.shape[0])
         theta = [0, 0, 0]
         time_list = self.create_timelist()
         for i in range(t.shape[0]):
+            if np.round(t[i], 3) in time_list:
+                self.P = self.rastreabilty*np.identity(3)
+            p[i] = np.linalg.norm(self.P, ord='fro')
             theta_plot.append(theta)
-            p[i] = np.linalg.norm(P, ord='fro')
             fi = np.array([[u[0][i]], [u[1][i]], [u[2][i]]])
-            K = P.dot(fi)/(1 + (np.transpose(fi).dot(P)).dot(fi))
-            P = (np.identity(3) - K.dot(np.transpose(fi))).dot(P)
-            if np.round(t[i],3) in time_list:
-                P = 100000*np.identity(3)
+            K = self.P.dot(fi)/(1 + (np.transpose(fi).dot(self.P)).dot(fi))
+            self.P = (np.identity(3) - K.dot(np.transpose(fi))).dot(self.P)
             theta = theta + K.dot(y[i] - np.transpose(fi).dot(theta))
-            error.append(abs(y[i] - theta[0]*u[0][i] + theta[1]*u[1][i] + theta[2]*u[2][i]))
+            error.append(abs(y[i] - theta[0]*u[0][i] - theta[1]*u[1][i] - theta[2]*u[2][i]))
+
         self.error = error
-        return theta_plot, p
+        self.theta_plot= theta_plot
+        self.p = p
            
 
