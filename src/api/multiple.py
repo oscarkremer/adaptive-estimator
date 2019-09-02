@@ -12,7 +12,12 @@ if __name__=='__main__':
     final_time = 0.500
     t = np.arange(0, step + final_time, step)
     update_times = [0.51]
-#    update_times = [0.03, 0.05, 0.07]
+    a = 0.4
+    b1 = 2
+    b2 = 1.5
+    
+#   a = 0.4
+  #   update_times = [0.03, 0.05, 0.07]
     #update_times = [0.01, 0.05, 0.08, 0.1, 0.15, 0.2, 0.3]
     #u = np.array([np.sin(t), np.cos(t), 3*np.power(t, 2)])
     #print(u.shape)    
@@ -23,19 +28,11 @@ if __name__=='__main__':
 
     for i in range(t.shape[0]):
         if i == 0:
-            y.append(0)
-            u.append([0, 0, 0, 0])
+            y.append(b2*np.sin(sig[i]))
+            u.append([0, 0, 0])
         else:
-            if i == 1:
-                y.append(0.7*sig[i-1])
-                u.append([y[i-1], 0, sig[i-1], 0])
-            else:
-                if i == 2:
-                    y.append(-0.7*y[i-1] - 0.1*y[i-2] + 1*sig[i-1] - 0.3*sig[i-2])        
-                    u.append([y[i-1], y[i-2], sig[i-1], sig[i-2]])
-                else:
-                    y.append(-0.7*y[i-1] - 0.1*y[i-2] + 1*sig[i-1] - 0.3*sig[i-2])
-                    u.append([y[i-1], y[i-2], sig[i-1], sig[i-2]])
+            y.append(-a*y[i-1] + b1*sig[i-1] + b2*np.sin(sig[i]))        
+            u.append([-y[i-1], sig[i-1], np.sin(sig[i])])
     u = np.transpose(np.array(u))
     print(u.shape)
 #    print(size(y))
@@ -89,7 +86,6 @@ if __name__=='__main__':
         plt.plot(t, np.transpose(np.array(model.theta_plot))[0])
         plt.plot(t, np.transpose(np.array(model.theta_plot))[1])
         plt.plot(t, np.transpose(np.array(model.theta_plot))[2])
-        plt.plot(t, np.transpose(np.array(model.theta_plot))[3])
         plt.show()
 
     plt.plot(t, error)
